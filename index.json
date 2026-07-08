@@ -4,9 +4,10 @@
     "pkg": "eu.kanade.tachiyomi.animeextension.en.gogoanime",
     "apk": "apk/aniyomi-en.gogoanime-v14.1-debug.apk",
     "lang": "en",
-    "code": 1,
+    "code": 2,
     "version": "14.1",
     "nsfw": 0,
+    "hash": "f2eac4fdc803aba380911a70e12bc5f0d0aefc30ed7d9da5551e3bd06e122e43",
     "sources": [
       {
         "name": "GogoAnime",
