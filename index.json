@@ -2,7 +2,7 @@
   {
     "name": "Aniyomi: GogoAnime",
     "pkg": "eu.kanade.tachiyomi.animeextension.en.gogoanime",
-    "apk": "aniyomi-en.gogoanime-v14.1-debug.apk",
+    "apk": "apk/aniyomi-en.gogoanime-v14.1-debug.apk",
     "lang": "en",
     "code": 1,
     "version": "14.1",
@@ -19,7 +19,7 @@
   {
     "name": "Aniyomi: AnimePahe",
     "pkg": "eu.kanade.tachiyomi.animeextension.en.animepahe",
-    "apk": "aniyomi-en.animepahe-v14.1-debug.apk",
+    "apk": "apk/aniyomi-en.animepahe-v14.1-debug.apk",
     "lang": "en",
     "code": 1,
     "version": "14.1",
