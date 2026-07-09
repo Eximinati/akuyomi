@@ -302,8 +302,8 @@ public class LibrariesForLibsInPluginsBlock extends AbstractExternalDependencyFa
         public InjektLibraryAccessors(AbstractExternalDependencyFactory owner) { super(owner); }
 
             /**
-             * Creates a dependency provider for core (com.github.inorichi.injekt:injekt-core)
-         * with version '65b0440'.
+             * Creates a dependency provider for core (com.github.null2264.injekt:injekt-core)
+         * with version '4135455a2a'.
              * This dependency was declared in catalog libs.versions.toml
          * @deprecated Will be removed in Gradle 9.0.
              */
@@ -467,7 +467,7 @@ public class LibrariesForLibsInPluginsBlock extends AbstractExternalDependencyFa
              * Creates a dependency bundle provider for common which is an aggregate for the following dependencies:
              * <ul>
              *    <li>org.jetbrains.kotlin:kotlin-stdlib-jdk8</li>
-             *    <li>com.github.inorichi.injekt:injekt-core</li>
+             *    <li>com.github.null2264.injekt:injekt-core</li>
              *    <li>io.reactivex:rxjava</li>
              *    <li>org.jetbrains.kotlinx:kotlinx-serialization-protobuf</li>
              *    <li>org.jetbrains.kotlinx:kotlinx-serialization-json</li>

@@ -1,0 +1,203 @@
+package eu.kanade.tachiyomi.animeextension.en.gogoanime
+
+import eu.kanade.tachiyomi.animesource.model.Track
+import eu.kanade.tachiyomi.animesource.model.Video
+import okhttp3.Headers
+import okhttp3.OkHttpClient
+import org.jsoup.Jsoup
+
+class GogoExtractor(private val client: OkHttpClient) {
+
+    fun videosFromResponse(body: String, url: String, headers: Headers): List<Video> {
+        val videos = mutableListOf<Video>()
+
+        val jwVideos = parseJwPlayer(body)
+        if (jwVideos.isNotEmpty()) {
+            videos.addAll(jwVideos)
+        }
+
+        if (videos.isEmpty()) {
+            val directVideos = parseDirectSources(body)
+            videos.addAll(directVideos)
+        }
+
+        if (videos.isEmpty()) {
+            val iframeUrl = parseIframeUrl(body)
+            if (iframeUrl != null) {
+                val resolved = resolveIframe(iframeUrl, headers)
+                if (resolved.isNotEmpty()) return resolved
+            }
+        }
+
+        return videos
+    }
+
+    private fun parseJwPlayer(html: String): List<Video> {
+        val videos = mutableListOf<Video>()
+        val subtitles = parseSubtitles(html)
+
+        val sourceRegex = Regex(
+            """sources\s*[=:]\s*\[([\s\S]*?)\]""",
+            setOf(RegexOption.MULTILINE, RegexOption.DOT_MATCHES_ALL),
+        )
+        val sourceMatch = sourceRegex.find(html)
+        if (sourceMatch != null) {
+            val sourcesStr = sourceMatch.groupValues[1]
+            val fileRegex = Regex("""["']?file["']?\s*:\s*"([^"]+)"""")
+            val labelRegex = Regex("""["']?label["']?\s*:\s*"([^"]+)"""")
+            val files = fileRegex.findAll(sourcesStr).map { it.groupValues[1] }.toList()
+            val labels = labelRegex.findAll(sourcesStr).map { it.groupValues[1] }.toList()
+
+            for (i in files.indices) {
+                val label = labels.getOrElse(i) { "Unknown" }
+                videos.add(
+                    Video(files[i], label, files[i], subtitleTracks = subtitles ?: emptyList()),
+                )
+            }
+        }
+
+        if (videos.isEmpty()) {
+            val singleFileRegex = Regex("""["']?(?:file(?:Url)?)["']?\s*[=:]\s*"([^"]+)"""")
+            val match = singleFileRegex.find(html)
+            if (match != null) {
+                val file = match.groupValues[1]
+                val label = extractQuality(file) ?: "Unknown"
+                videos.add(
+                    Video(file, label, file, subtitleTracks = subtitles ?: emptyList()),
+                )
+            }
+        }
+
+        return videos
+    }
+
+    private fun parseSubtitles(html: String): List<Track>? {
+        val tracks = mutableListOf<Track>()
+        val trackRegex = Regex(
+            """tracks\s*[=:]\s*\[([\s\S]*?)\]""",
+            setOf(RegexOption.MULTILINE, RegexOption.DOT_MATCHES_ALL),
+        )
+        val trackMatch = trackRegex.find(html)
+        if (trackMatch != null) {
+            val tracksStr = trackMatch.groupValues[1]
+            val fileRegex = Regex("""["']?file["']?\s*:\s*"([^"]+)"""")
+            val labelRegex = Regex("""["']?label["']?\s*:\s*"([^"]+)"""")
+            val kindRegex = Regex("""["']?kind["']?\s*:\s*"([^"]+)"""")
+            val files = fileRegex.findAll(tracksStr).map { it.groupValues[1] }.toList()
+            val labels = labelRegex.findAll(tracksStr).map { it.groupValues[1] }.toList()
+            val kinds = kindRegex.findAll(tracksStr).map { it.groupValues[1] }.toList()
+
+            for (i in files.indices) {
+                val kind = kinds.getOrElse(i) { "" }
+                if (kind.contains("captions", true) || kind.contains("subtitles", true)) {
+                    val lang = labels.getOrElse(i) { "English" }
+                    tracks.add(Track(files[i], lang))
+                }
+            }
+        }
+        return tracks.ifEmpty { null }
+    }
+
+    private fun parseDirectSources(html: String): List<Video> {
+        val videos = mutableListOf<Video>()
+        val doc = Jsoup.parse(html)
+
+        doc.select("source, video source").forEach { source ->
+            val src = source.attr("abs:src").ifEmpty {
+                source.parent()?.attr("abs:src") ?: return@forEach
+            }
+            val type = source.attr("type")
+            val quality = when {
+                type.contains("m3u8", true) -> "HLS"
+                type.contains("mp4", true) -> extractQuality(src) ?: "Unknown"
+                else -> extractQuality(src) ?: "Unknown"
+            }
+            videos.add(Video(src, quality, src))
+        }
+
+        doc.select("video[src]").forEach { video ->
+            val src = video.attr("abs:src")
+            if (videos.none { it.url == src }) {
+                val quality = extractQuality(src) ?: "Unknown"
+                videos.add(Video(src, quality, src))
+            }
+        }
+
+        return videos
+    }
+
+    private fun parseIframeUrl(html: String): String? {
+        val doc = Jsoup.parse(html)
+        val iframe = doc.selectFirst("iframe[src]") ?: return null
+        val src = iframe.attr("abs:src")
+        return src.takeIf { it.isNotBlank() }
+    }
+
+    private fun resolveIframe(url: String, originalHeaders: Headers): List<Video> {
+        return try {
+            val response = client.newCall(
+                okhttp3.Request.Builder()
+                    .url(url)
+                    .headers(originalHeaders)
+                    .addHeader("Referer", url)
+                    .build(),
+            ).execute()
+            val body = response.body.string()
+            response.close()
+
+            val videos = parseJwPlayer(body)
+            if (videos.isNotEmpty()) return videos
+
+            val directVideos = parseDirectSources(body)
+            if (directVideos.isNotEmpty()) return directVideos
+
+            val m3u8Videos = parseM3u8(body)
+            if (m3u8Videos.isNotEmpty()) return m3u8Videos
+
+            listOf(Video(url, "Unknown", url))
+        } catch (_: Exception) {
+            emptyList()
+        }
+    }
+
+    private fun parseM3u8(body: String): List<Video> {
+        val videos = mutableListOf<Video>()
+        val m3u8Regex = Regex("""https?://[^\s"']+\.m3u8[^\s"']*""")
+        val matches = m3u8Regex.findAll(body).toList().distinct()
+
+        for (match in matches) {
+            val url = match.value.trimEnd(')', ',', '"', '\'', '>')
+            val quality = extractQuality(url) ?: "HLS"
+            videos.add(Video(url, quality, url))
+        }
+
+        return videos
+    }
+
+    companion object {
+        fun extractQuality(url: String): String? {
+            val qualityPatterns = listOf(
+                Regex("""(\d{3,4})[pP]"""),
+                Regex("""(\d{3,4})x(\d{3,4})"""),
+                Regex("""_(\d{3,4})_"""),
+            )
+
+            for (pattern in qualityPatterns) {
+                val match = pattern.find(url)
+                if (match != null) {
+                    val value = match.groupValues[1].toIntOrNull() ?: continue
+                    return when {
+                        value >= 2160 -> "2160p"
+                        value >= 1080 -> "1080p"
+                        value >= 720 -> "720p"
+                        value >= 480 -> "480p"
+                        value >= 360 -> "360p"
+                        else -> "${value}p"
+                    }
+                }
+            }
+
+            return null
+        }
+    }
+}
