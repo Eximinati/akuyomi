@@ -36,6 +36,24 @@
     ]
   },
   {
+    "name": "Aniyomi: Pornhub",
+    "pkg": "eu.kanade.tachiyomi.animeextension.en.pornhub",
+    "apk": "apk/aniyomi-en.pornhub-v14.1-debug.apk",
+    "lang": "en",
+    "code": 1,
+    "version": "14.1",
+    "nsfw": 1,
+    "hash": "775150946ba6a38366e70216af45d5f241c0e87ebb267cc654b4be331c15717d",
+    "sources": [
+      {
+        "name": "Pornhub",
+        "lang": "en",
+        "id": "5739462817463928194",
+        "baseUrl": "https://www.pornhub.com"
+      }
+    ]
+  },
+  {
     "name": "Aniyomi: AnimePahe",
     "pkg": "eu.kanade.tachiyomi.animeextension.en.animepahe",
     "apk": "apk/aniyomi-en.animepahe-v14.1-debug.apk",
