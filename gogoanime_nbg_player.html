@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>JW Player n</title>
+  <style>
+    html, body { width: 100%; height: 100%; margin: 0; padding: 0; background: #000; }
+    #player { width: 100vw; height: 100vh; }
+    #embed { width: 100vw; height: 100vh; border: 0; }
+    .err { color: #fff; font-family: Arial, sans-serif; padding: 16px; }
+  </style>
+</head>
+<body>
+  <div id="player"></div>
+
+          <script src="https://cdn.jwplayer.com/libraries/IDzF9Zmk.js"></script>
+    <script>
+      (function(){
+        var fileUrl = "https://rr5---sn-vgqsknes.googlevideo.com/videoplayback?expire=1783616344&ei=2GJPaoH4Ea7e2O8PjqjGuQs&ip=38.154.109.92&id=0b0fb4133024f640&itag=18&source=blogger&requiressl=yes&xpc=Egho7Zf3LnoBAQ==&cps=25&met=1783587544,&mh=zg&mm=31&mn=sn-vgqsknes&ms=au&mv=m&mvi=5&pl=19&rms=au,au&susc=bl&svpuc=1&eaua=JA-uLzRK0Z4&mime=video/mp4&vprv=1&rqh=1&dur=1368.142&lmt=1783189131835646&mt=1783586963&txp=1311224&sparams=expire,ei,ip,id,itag,source,requiressl,xpc,susc,svpuc,eaua,mime,vprv,rqh,dur,lmt&sig=AHEqNM4wRQIhAMa16lazeh1pxjdXd5b2TCgVy4XWO-l3-F4AynukMgnSAiBcn9LebmTiZRA_izBPnPpE8TshMRc9POMWeaq-czby4A==&lsparams=cps,met,mh,mm,mn,ms,mv,mvi,pl,rms&lsig=APaTxxMwRQIgFxju-MiDN3SIXYGVyYbW8IgYelW_9t26zB3PqwEGSKgCIQDc_6n3D7jGhxj_sgligJ_kkRKB-uUb_cTmiYIS5Do9JQ==";
+        var sources = [{"file":"https://rr5---sn-vgqsknes.googlevideo.com/videoplayback?expire=1783616344&ei=2GJPaoH4Ea7e2O8PjqjGuQs&ip=38.154.109.92&id=0b0fb4133024f640&itag=18&source=blogger&requiressl=yes&xpc=Egho7Zf3LnoBAQ==&cps=25&met=1783587544,&mh=zg&mm=31&mn=sn-vgqsknes&ms=au&mv=m&mvi=5&pl=19&rms=au,au&susc=bl&svpuc=1&eaua=JA-uLzRK0Z4&mime=video/mp4&vprv=1&rqh=1&dur=1368.142&lmt=1783189131835646&mt=1783586963&txp=1311224&sparams=expire,ei,ip,id,itag,source,requiressl,xpc,susc,svpuc,eaua,mime,vprv,rqh,dur,lmt&sig=AHEqNM4wRQIhAMa16lazeh1pxjdXd5b2TCgVy4XWO-l3-F4AynukMgnSAiBcn9LebmTiZRA_izBPnPpE8TshMRc9POMWeaq-czby4A==&lsparams=cps,met,mh,mm,mn,ms,mv,mvi,pl,rms&lsig=APaTxxMwRQIgFxju-MiDN3SIXYGVyYbW8IgYelW_9t26zB3PqwEGSKgCIQDc_6n3D7jGhxj_sgligJ_kkRKB-uUb_cTmiYIS5Do9JQ==","type":"mp4","label":"360p","default":true}];
+        if (typeof jwplayer !== 'function') {
+          document.body.innerHTML = '<div class="err">JW Player failed to load.</div>';
+          return;
+        }
+
+        var setupConfig = {
+          width: '100%',
+          height: '100%',
+          autostart: false,
+          mute: false
+        };
+
+        var thumbUrl = "https://i9.ytimg.com/vi_blogger/Cw-0EzAk9kA/1.jpg?sqp=CNjFvdIGGJAc-oaymwEGCMACELQB&rs=AMzJL3lVELfIbKYSSU8XrEK8ZcA9_GZwGg";
+        if (thumbUrl) {
+          setupConfig.image = thumbUrl;
+        }
+
+        if (Array.isArray(sources) && sources.length > 0) {
+          setupConfig.sources = sources;
+        } else {
+          setupConfig.file = fileUrl;
+        }
+
+        var player = jwplayer('player').setup(setupConfig);
+
+        function tryFullscreen() {
+          try {
+            player.setFullscreen(true);
+          } catch (e) {
+            // Some browsers require a user gesture to enter fullscreen.
+          }
+        }
+
+        player.on('ready', function(){
+          tryFullscreen();
+        });
+
+        var once = false;
+        function onFirstGesture() {
+          if (once) return;
+          once = true;
+          tryFullscreen();
+          document.removeEventListener('click', onFirstGesture, true);
+          document.removeEventListener('touchstart', onFirstGesture, true);
+          document.removeEventListener('keydown', onFirstGesture, true);
+        }
+        document.addEventListener('click', onFirstGesture, true);
+        document.addEventListener('touchstart', onFirstGesture, true);
+        document.addEventListener('keydown', onFirstGesture, true);
+      })();
+    </script>
+  </body>
+</html>

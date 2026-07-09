@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>MegaPlay Player</title>
+    <style>
+        /* Full screen setup without scrollbars */
+        body, html { 
+            margin: 0; 
+            padding: 0; 
+            width: 100%; 
+            height: 100%; 
+            background: #000; 
+            overflow: hidden; 
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        /* Container ensuring controls stay inside viewport */
+        #player-container { 
+            width: 100%; 
+            height: 100%; 
+            max-width: 100vw;
+            max-height: 100vh;
+        }
+    </style>
+    <!-- JWPlayer Library[cite: 1, 2] -->
+    <script src="https://cdn.jwplayer.com/libraries/IDzF9Zmk.js"></script>
+</head>
+<body>
+
+<div id="player-container"></div>
+
+<script>
+    jwplayer("player-container").setup({
+        file: "https://megaplay.su/uploads/bWRwdXBMcEdaZW5nL05wcU9qdjl6dks1M1orWHhIQzBmUlB6T0E0TGIxbz0.mp4?v=1783186575",
+        image: "https://megaplay.su/uploads/bWRwdXBMcEdaZW5nL05wcU9qdjl6dks1M1orWHhIQzBmUlB6T0E0TGIxbz0.jpg?v=1783188014",
+        type:   "mp4",
+        width: "100%",
+        height: "100%",
+        autostart: false, 
+        mute: false,      
+        stretching: "uniform",
+        controls: true,
+        tracks: [],
+        responsive: true
+    });
+
+    document.addEventListener('touchstart', function(event) {
+        if (event.touches.length > 1) {
+            event.preventDefault();
+        }
+    }, { passive: false });
+</script>
+
+<script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"8855dae9f1034c4db215e7d5b80d7727","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
+</body>
+</html>
