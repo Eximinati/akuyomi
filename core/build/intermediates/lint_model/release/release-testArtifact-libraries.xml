@@ -1,0 +1,15 @@
+<libraries>
+  <library
+      name=":@@:core::release"
+      jars="D:\akuyomi\core\build\.transforms\e42004d1164cb34ae8aef4a077f71020\transformed\out\jars\classes.jar;D:\akuyomi\core\build\.transforms\e42004d1164cb34ae8aef4a077f71020\transformed\out\jars\libs\R.jar"
+      resolved="akuyomi:core:unspecified"
+      folder="D:\akuyomi\core\build\.transforms\e42004d1164cb34ae8aef4a077f71020\transformed\out"
+      manifest="AndroidManifest.xml"
+      resFolder="res"
+      assetsFolder="assets"
+      lintJar="lint.jar"
+      publicResources="public.txt"
+      symbolFile="R.txt"
+      externalAnnotations="annotations.zip"
+      proguardRules="proguard.txt"/>
+</libraries>

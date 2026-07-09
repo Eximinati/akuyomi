@@ -1,0 +1,19 @@
+<lint-module
+    format="1"
+    dir="D:\akuyomi\core"
+    name=":core"
+    type="LIBRARY"
+    maven="akuyomi:core:"
+    agpVersion="8.2.1"
+    buildFolder="build"
+    bootClassPath="D:\Android\Android\Sdk\platforms\android-32\android.jar;D:\Android\Android\Sdk\build-tools\34.0.0\core-lambda-stubs.jar"
+    javaSourceLevel="1.8"
+    compileTarget="android-32"
+    neverShrinking="true">
+  <lintOptions
+      abortOnError="true"
+      absolutePaths="true"
+      checkReleaseBuilds="true"
+      explainIssues="true"/>
+  <variant name="release"/>
+</lint-module>

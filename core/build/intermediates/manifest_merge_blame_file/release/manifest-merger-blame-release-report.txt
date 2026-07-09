@@ -1,0 +1,18 @@
+1<?xml version="1.0" encoding="utf-8"?>
+2<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+3    package="eu.kanade.tachiyomi.lib.core" >
+4
+5    <uses-sdk android:minSdkVersion="21" />
+6
+7    <uses-feature android:name="tachiyomi.animeextension" />
+7-->D:\akuyomi\core\AndroidManifest.xml:4:5-61
+7-->D:\akuyomi\core\AndroidManifest.xml:4:19-58
+8
+9    <application
+9-->D:\akuyomi\core\AndroidManifest.xml:6:5-83
+10        android:allowBackup="false"
+10-->D:\akuyomi\core\AndroidManifest.xml:6:53-80
+11        android:icon="@mipmap/ic_launcher" />
+11-->D:\akuyomi\core\AndroidManifest.xml:6:18-52
+12
+13</manifest>

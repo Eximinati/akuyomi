@@ -2,18 +2,36 @@
   {
     "name": "Aniyomi: GogoAnime",
     "pkg": "eu.kanade.tachiyomi.animeextension.en.gogoanime",
-    "apk": "apk/aniyomi-en.gogoanime-v14.1-debug.apk",
+    "apk": "apk/aniyomi-en.gogoanime-v14.2-debug.apk",
     "lang": "en",
-    "code": 2,
-    "version": "14.1",
+    "code": 3,
+    "version": "14.2",
     "nsfw": 0,
-    "hash": "e6e045627bef0309fc39db210f24abe8c29bd2b23e347bf36a37818c37143812",
+    "hash": "46e5990c10db9dd697a4875f82a14666ec977f574ef17160361d1adf11afe9cb",
     "sources": [
       {
         "name": "GogoAnime",
         "lang": "en",
         "id": "1837462918463728191",
         "baseUrl": "https://gogoanime.by"
+      }
+    ]
+  },
+  {
+    "name": "Aniyomi: Animegg",
+    "pkg": "eu.kanade.tachiyomi.animeextension.en.animegg",
+    "apk": "apk/aniyomi-en.animegg-v14.1-debug.apk",
+    "lang": "en",
+    "code": 1,
+    "version": "14.1",
+    "nsfw": 0,
+    "hash": "d58f4dd8a04eb1e96c31171fc3f246595679b34ec275becb90fd1fe997ed9584",
+    "sources": [
+      {
+        "name": "Animegg",
+        "lang": "en",
+        "id": "3837462918463728193",
+        "baseUrl": "https://www.animegg.org"
       }
     ]
   },

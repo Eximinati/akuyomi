@@ -1,0 +1,14 @@
+<dependencies>
+  <compile
+      roots=":@@:core::release">
+    <dependency
+        name=":@@:core::release"
+        simpleName="akuyomi:core"/>
+  </compile>
+  <package
+      roots=":@@:core::release">
+    <dependency
+        name=":@@:core::release"
+        simpleName="akuyomi:core"/>
+  </package>
+</dependencies>
