@@ -1,5 +1,8 @@
 package eu.kanade.tachiyomi.animeextension.en.porn00
 
+import androidx.preference.ListPreference
+import androidx.preference.PreferenceScreen
+import eu.kanade.tachiyomi.animesource.ConfigurableAnimeSource
 import eu.kanade.tachiyomi.animesource.model.AnimeFilterList
 import eu.kanade.tachiyomi.animesource.model.AnimesPage
 import eu.kanade.tachiyomi.animesource.model.SAnime
@@ -13,7 +16,7 @@ import okhttp3.Request
 import okhttp3.Response
 import org.jsoup.nodes.Element
 
-class Porn00 : AnimeHttpSource() {
+class Porn00 : AnimeHttpSource(), ConfigurableAnimeSource {
 
     override val name = "Porn00"
 
@@ -30,6 +33,20 @@ class Porn00 : AnimeHttpSource() {
         .add("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
         .add("Accept-Language", "en-US,en;q=0.5")
         .add("Referer", baseUrl)
+
+    // ─── Preferences ──────────────────────────────────────────────────
+
+    override fun setupPreferenceScreen(screen: PreferenceScreen) {
+        val qualityPref = ListPreference(screen.context).apply {
+            key = "preferred_quality"
+            title = "Preferred quality"
+            entries = arrayOf("Auto (highest)", "2160p (4K)", "1080p", "720p", "480p", "360p")
+            entryValues = arrayOf("auto", "2160", "1080", "720", "480", "360")
+            setDefaultValue("auto")
+            summary = "%s"
+        }
+        screen.addPreference(qualityPref)
+    }
 
     // ─── Popular (Most Viewed) ────────────────────────────────────────
 
