@@ -17,6 +17,9 @@ class PornhubExtractor(private val client: OkHttpClient) {
     fun videosFromPage(html: String): List<Video> {
         val videos = mutableListOf<Video>()
 
+        videos.addAll(parseFlashvars(html))
+        if (videos.isNotEmpty()) return videos
+
         videos.addAll(parseInitialState(html))
         if (videos.isNotEmpty()) return videos
 
@@ -35,6 +38,51 @@ class PornhubExtractor(private val client: OkHttpClient) {
         videos.addAll(parseHlsUrls(html))
 
         return videos
+    }
+
+    private fun parseFlashvars(html: String): List<Video> {
+        val regex = Regex(
+            """var\s+flashvars_\d+\s*=\s*(\{[\s\S]*?\});""",
+            setOf(RegexOption.MULTILINE, RegexOption.DOT_MATCHES_ALL),
+        )
+        val match = regex.find(html) ?: return emptyList()
+
+        return try {
+            val root = JSONObject(match.groupValues[1])
+            val videos = mutableListOf<Video>()
+
+            val definitions = root.optJSONArray("mediaDefinitions")
+            if (definitions != null) {
+                for (i in 0 until definitions.length()) {
+                    val item = definitions.getJSONObject(i)
+                    val quality = item.optString("quality", "")
+                    val videoUrl = item.optString("videoUrl", "")
+                    val url = item.optString("url", "")
+                    val finalUrl = videoUrl.ifBlank { url }
+                    val format = item.optString("format", "mp4")
+
+                    if (finalUrl.isNotBlank()) {
+                        val label = if (format == "hls") {
+                            val q = quality.ifBlank { "HLS" }
+                            "$q (HLS)"
+                        } else {
+                            quality.ifBlank { "Unknown" }
+                        }
+                        videos.add(Video(finalUrl, label, finalUrl))
+                    }
+                }
+            }
+
+            val videoUrl = root.optString("videoUrl", "")
+            val defaultQuality = root.optString("defaultQuality", "720")
+            if (videoUrl.isNotBlank() && videos.none { it.url == videoUrl }) {
+                videos.add(Video(videoUrl, "${defaultQuality}p", videoUrl))
+            }
+
+            videos
+        } catch (_: Exception) {
+            emptyList()
+        }
     }
 
     fun videosFromApi(viewkey: String, headers: Headers): List<Video> {
@@ -276,6 +324,9 @@ class PornhubExtractor(private val client: OkHttpClient) {
             response.close()
 
             val videos = mutableListOf<Video>()
+
+            videos.addAll(parseFlashvars(html))
+            if (videos.isNotEmpty()) return videos
 
             videos.addAll(parseQualityItems(html))
             if (videos.isNotEmpty()) return videos

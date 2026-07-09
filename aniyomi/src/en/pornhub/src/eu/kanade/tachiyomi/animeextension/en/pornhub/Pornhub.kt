@@ -126,11 +126,11 @@ class Pornhub : AnimeHttpSource() {
 
         if (videos.isEmpty()) {
             val apiVideos = extractor.videosFromApi(viewkey, headers)
-            if (apiVideos.isNotEmpty()) return apiVideos.sortedByDescending { extractQuality(it.quality) }
+            if (apiVideos.isNotEmpty()) return apiVideos.sortedByDescending { parseQuality(it.quality) }
             return emptyList()
         }
 
-        return videos.sortedByDescending { extractQuality(it.quality) }
+        return videos.sortedByDescending { parseQuality(it.quality) }
     }
 
     // ─── Helpers ─────────────────────────────────────────────────────
@@ -154,7 +154,7 @@ class Pornhub : AnimeHttpSource() {
         return anime
     }
 
-    private fun extractQuality(quality: String): Int {
+    private fun parseQuality(quality: String): Int {
         val num = quality.replace(Regex("[^0-9]"), "")
         return num.toIntOrNull() ?: 0
     }
