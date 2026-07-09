@@ -54,6 +54,24 @@
     ]
   },
   {
+    "name": "Aniyomi: Porn00",
+    "pkg": "eu.kanade.tachiyomi.animeextension.en.porn00",
+    "apk": "apk/aniyomi-en.porn00-v14.1-debug.apk",
+    "lang": "en",
+    "code": 1,
+    "version": "14.1",
+    "nsfw": 1,
+    "hash": "1095cfac68f9b82e8908cd7883e428a611572b300b6a6adeb6561b048789f3d5",
+    "sources": [
+      {
+        "name": "Porn00",
+        "lang": "en",
+        "id": "6739462817463928195",
+        "baseUrl": "https://www.porn00.org"
+      }
+    ]
+  },
+  {
     "name": "Aniyomi: AnimePahe",
     "pkg": "eu.kanade.tachiyomi.animeextension.en.animepahe",
     "apk": "apk/aniyomi-en.animepahe-v14.1-debug.apk",
